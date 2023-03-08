@@ -19,14 +19,14 @@ fi
 cd linux-80211n-csitool
 
 # Check out the correct release version based on kernel version
-if [[ "$kernel_version" == *"4.4"* ]]; then
-    CSITOOL_KERNEL_TAG=csitool-4.4
-elif [[ "$kernel_version" == *"4.9"* ]]; then
-    CSITOOL_KERNEL_TAG=csitool-4.9
-elif [[ "$kernel_version" == *"5.3"* ]]; then
-    CSITOOL_KERNEL_TAG=csitool-5.3
+if [[ "$kernel_version" == *"4.15"* ]]; then
+    CSITOOL_KERNEL_TAG=csitool-4.15
+# elif [[ "$kernel_version" == *"4.9"* ]]; then
+#     CSITOOL_KERNEL_TAG=csitool-4.9
+# elif [[ "$kernel_version" == *"5.3"* ]]; then
+#     CSITOOL_KERNEL_TAG=csitool-5.3
 else
-    echo "Error: Unsupported kernel version"
+    echo "Error: Unsupported kernel version, please use kernel 4.15."
     exit 1
 fi
 
