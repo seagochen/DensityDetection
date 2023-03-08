@@ -1,8 +1,8 @@
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
-import csi_scale
-import csi
+from wifilib import wifilib as csi
+from wifilib import CSIscale as csi_scale
 
 if len(sys.argv) < 2:
     print("Usage: python3 plot_csi.py [csi file]")
