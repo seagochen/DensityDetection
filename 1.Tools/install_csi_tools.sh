@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Get the current kernel version
+kernel_version=$(uname -r)
+
 # Check if the necessary directories are already present
 if [ ! -d "linux-80211n-csitool" ] || [ -z "$(ls -A linux-80211n-csitool)" ] || \
    [ ! -d "linux-80211n-csitool/linux-80211n-csitool-supplementary" ] || \
@@ -15,8 +18,18 @@ fi
 # Change to the cloned repository directory
 cd linux-80211n-csitool
 
-# Check out the correct release version
-CSITOOL_KERNEL_TAG=csitool-$(uname -r | cut -d . -f 1-2)
+# Check out the correct release version based on kernel version
+if [[ "$kernel_version" == *"4.4"* ]]; then
+    CSITOOL_KERNEL_TAG=csitool-4.4
+elif [[ "$kernel_version" == *"4.9"* ]]; then
+    CSITOOL_KERNEL_TAG=csitool-4.9
+elif [[ "$kernel_version" == *"5.3"* ]]; then
+    CSITOOL_KERNEL_TAG=csitool-5.3
+else
+    echo "Error: Unsupported kernel version"
+    exit 1
+fi
+
 git checkout ${CSITOOL_KERNEL_TAG}
 
 # Update package repository index
@@ -29,10 +42,10 @@ sudo apt-get upgrade
 sudo apt-get install build-essential linux-headers-$(uname -r) git-core
 
 # Build the modified wireless driver
-sudo make -j `nproc` -C /lib/modules/$(uname -r)/build/ BUILD_DIR=$(pwd)/drivers/net/wireless/intel/iwlwifi modules
+sudo make -j `nproc` -C /lib/modules/$kernel_version/build/ BUILD_DIR=$(pwd)/drivers/net/wireless/intel/iwlwifi modules
 
 # Install the modified wireless driver
-sudo sudo make -C /lib/modules/$(uname -r) BUILD_DIR=$(pwd)/drivers/net/wireless/intel/iwlwifi INSTALL_MOD_DIR=updates modules_install
+sudo sudo make -C /lib/modules/$kernel_version BUILD_DIR=$(pwd)/drivers/net/wireless/intel/iwlwifi INSTALL_MOD_DIR=updates modules_install
 
 # Move any existing iwlwifi-5000-*.ucode files to a backup location
 for file in /lib/firmware/iwlwifi-5000-*.ucode; do sudo mv $file $file.orig; done
