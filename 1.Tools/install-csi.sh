@@ -8,7 +8,7 @@ sudo apt-get install build-essential linux-headers-$(uname -r) git-core aptitude
 
 # Clone the modified Linux kernel code from the CSI tool GitHub repository
 CSITOOL_KERNEL_TAG=csitool-$(uname -r | cut -d . -f 1-2)
-# git clone https://github.com/dhalperi/linux-80211n-csitool.git
+git clone https://github.com/dhalperi/linux-80211n-csitool.git
 cd linux-80211n-csitool
 git checkout ${CSITOOL_KERNEL_TAG}
 
