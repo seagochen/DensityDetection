@@ -1,23 +1,25 @@
 #!/bin/bash
 
-# 定义wpa_supplicant进程名
-PROCESS_NAME=wpa_supplicant
+# Set color variables
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
 
-# 检测进程是否在运行
-if pgrep $PROCESS_NAME > /dev/null; then
-  # 如果进程在运行，就停止它
-  echo "Stopping $PROCESS_NAME process..."
-  sudo killall $PROCESS_NAME
-  echo "$PROCESS_NAME process stopped."
-fi
+# Unload the driver
+echo "${GREEN}Unloading the driver...${NC}"
+sudo modprobe -r iwldvm iwlwifi mac80211
 
-# 激活CSI驱动
-sudo modprobe -r iwlwifi mac80211
+# Reload the driver with CSI logging enabled
+echo "${GREEN}Reloading the driver with CSI logging enabled...${NC}"
 sudo modprobe iwlwifi connector_log=0x1
-sudo modprobe iwldvm
 
-# 打印激活CSI驱动的信息
-echo "CSI driver activated."
+# Connect to an 802.11n access point
+echo "${GREEN}Connecting to an 802.11n access point...${NC}"
+# TODO: Replace the following line with the appropriate command to connect to an access point
+# For example, you can use the iw and iproute2 utilities, or NetworkManager (nmcli or graphical applet)
+# Or, you can let the system function as an access point by installing and configuring hostapd
+# See supplementary material for configuration examples
+# Once connected, proceed with logging CSI
 
-# 启动CSIlog_to_file
+# Begin logging CSI to a file
+echo "${GREEN}Beginning CSI logging to a file...${NC}"
 sudo ./netlink/log_to_file csi.dat
