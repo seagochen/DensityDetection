@@ -41,11 +41,11 @@ sudo apt-get install build-essential linux-headers-$(uname -r) git-core
 
 # Build the modified wireless driver
 echo "${GREEN}Building the modified wireless driver and netlink tool...${NC}"
-sudo make -j `nproc` -C /lib/modules/$(uname -r)/build M=$(pwd)/drivers/net/wireless/intel/iwlwifi modules
-
+sudo make -C /lib/modules/$(uname -r)/build M=$(pwd)/drivers/net/wireless/iwlwifi modules
+ 
 # Install the modified wireless driver
 echo "${GREEN}Installing the modified wireless driver...${NC}"
-sudo make -C /lib/modules/$(uname -r)/build M=$(pwd)/drivers/net/wireless/intel/iwlwifi INSTALL_MOD_DIR=updates modules_install
+sudo make -C /lib/modules/$(uname -r)/build M=$(pwd)/drivers/net/wireless/iwlwifi INSTALL_MOD_DIR=updates modules_install
 
 # Update module dependencies
 echo "${GREEN}Updating module dependencies...${NC}"
