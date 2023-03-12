@@ -17,18 +17,18 @@ fi
 cd linux-80211n-csitool
 
 # Check if the necessary directories are already present
-if [ ! -d "linux-80211n-csitool-supplementary" ] || \
-   [ -z "$(ls -A linux-80211n-csitool-supplementary)" ]; then
+if [ ! -d "linux-80211n-csitool/linux-80211n-csitool-supplementary" ] || \
+   [ -z "$(ls -A linux-80211n-csitool/linux-80211n-csitool-supplementary)" ]; then
     git clone https://github.com/dhalperi/linux-80211n-csitool-supplementary.git
 fi
 
-if [ ! -d "Realtime-processing-for-csitool" ] || \
-   [ -z "$(ls -A Realtime-processing-for-csitool)" ]; then 
+if [ ! -d "linux-80211n-csitool/Realtime-processing-for-csitool" ] || \
+   [ -z "$(ls -A linux-80211n-csitool/Realtime-processing-for-csitool)" ]; then 
     git clone https://github.com/lubingxian/Realtime-processing-for-csitool.git
 fi
 
 # Check out the correct release version based on kernel version
-CSITOOL_KERNEL_TAG=csitool-$(uname -r | cut -d . -f 1-2)
+CSITOOL_KERNEL_TAG=csitool-4.15
 git checkout $CSITOOL_KERNEL_TAG
 
 # Update package repository index
@@ -41,15 +41,11 @@ sudo apt-get install build-essential linux-headers-$(uname -r) git-core
 
 # Build the modified wireless driver
 echo "${GREEN}Building the modified wireless driver and netlink tool...${NC}"
-sudo make -C /lib/modules/$(uname -r)/build M=$(pwd)/drivers/net/wireless/iwlwifi modules
- 
+sudo make -j `nproc` -C /lib/modules/$kernel_version/build/ BUILD_DIR=$(pwd)/drivers/net/wireless/intel/iwlwifi modules
+
 # Install the modified wireless driver
 echo "${GREEN}Installing the modified wireless driver...${NC}"
-sudo make -C /lib/modules/$(uname -r)/build M=$(pwd)/drivers/net/wireless/iwlwifi INSTALL_MOD_DIR=updates modules_install
-
-# Update module dependencies
-echo "${GREEN}Updating module dependencies...${NC}"
-sudo depmod
+sudo sudo make -C /lib/modules/$kernel_version BUILD_DIR=$(pwd)/drivers/net/wireless/intel/iwlwifi INSTALL_MOD_DIR=updates modules_install
 
 # Move any existing iwlwifi-5000-*.ucode files to a backup location
 echo "${GREEN}Backing up existing firmware files...${NC}"
